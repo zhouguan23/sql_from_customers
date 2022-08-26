@@ -1,0 +1,382 @@
+select distinct area_code,area_name from DIM_REGION
+
+select distinct cus_code,cus_name from DIM_CUS
+WHERE 
+1=1
+${if(len(area)=0,""," and area_Code in ('"+area+"')")}
+
+SELECT  
+--A.AREA_CODE AS 区域,
+--A.CUS_CODE AS 门店,
+B.WEEK_ID AS 周序号,
+SUM(SALE_QTY) AS 数量,
+SUM(NO_TAX_AMOUNT) AS 无税销售额
+FROM  
+DM_SALE_TMP A, DIM_DAY B 
+WHERE 
+A.CUS_CODE = '${CUS}'
+AND
+B.YEAR_ID = SUBSTR('${YEAR}',1,4)
+AND
+A.SALE_DATE <= DATE'${YEAR}'
+AND
+A.SALE_DATE =  B.DDATE
+GROUP BY 
+--A.AREA_CODE,
+--A.CUS_CODE,
+B.WEEK_ID
+ORDER BY 
+B.WEEK_ID
+
+
+SELECT  
+--A.AREA_CODE AS 区域,
+--A.CUS_CODE AS 门店,
+B.MONTH_ID AS 月序号,
+SUM(SALE_QTY) AS 数量,
+SUM(NO_TAX_AMOUNT) AS 无税销售额
+FROM  
+DM_SALE_TMP A, DIM_DAY B 
+WHERE 
+A.CUS_CODE = '${CUS}'
+AND 
+a.SALE_DATE>=trunc(DATE'${YEAR}','mm')
+AND 
+a.SALE_DATE<add_months(trunc(DATE'${YEAR}','mm'),1)
+AND
+A.SALE_DATE <= DATE'${YEAR}'
+AND
+A.SALE_DATE =  B.DDATE
+GROUP BY 
+--A.AREA_CODE,
+--A.CUS_CODE,
+B.MONTH_ID
+ORDER BY 
+B.MONTH_ID
+
+SELECT 
+B.WEEK_ID AS 周序号,
+SUM(TRAN_NUM) AS 交易笔次
+FROM  DM_TRANSACTION  A,
+DIM_DAY B
+WHERE 
+A.CUS_CODE = '${CUS}'
+AND
+B.YEAR_ID = SUBSTR('${YEAR}',1,4)
+AND
+A.SALE_DATE <= DATE'${YEAR}'
+AND
+A.SALE_DATE =  B.DDATE
+GROUP BY 
+B.WEEK_ID 
+
+SELECT 
+B.MONTH_ID AS 月序号,
+SUM(TRAN_NUM) AS 交易笔次
+FROM  DM_TRANSACTION  A,
+DIM_DAY B
+WHERE 
+A.CUS_CODE = '${CUS}'
+AND 
+a.SALE_DATE>=trunc(DATE'${YEAR}','mm')
+AND 
+a.SALE_DATE<add_months(trunc(DATE'${YEAR}','mm'),1)
+AND
+A.SALE_DATE =  B.DDATE
+GROUP BY 
+B.MONTH_ID 
+
+SELECT DDATE as 日期, 
+WEEK_ID AS 星期序号,
+MONTH_ID AS 年月,
+YEAR_ID AS 年份,
+to_char(TRUNC(TO_DATE(to_char(DDATE,'yyyy-MM-dd'),'yyyy-MM-dd'),'IW'),'yyyy-MM-dd')   当周起始日,
+case when TRUNC(TO_DATE(to_char(DDATE,'yyyy-MM-dd'),'YYYY-MM-DD'),'IW')=TRUNC(TO_DATE(to_char(DATE'${YEAR}','yyyy-MM-dd'),'YYYY-MM-DD'),'IW') then '${YEAR}' else  to_char(TRUNC(TO_DATE(to_char(DDATE,'yyyy-MM-dd'),'YYYY-MM-DD'),'IW') + 6,'yyyy-MM-dd') end   当周截止日,
+trunc(DDATE,'mm') 当月起始日,
+add_months(trunc(DDATE,'mm'),1)-1 当月截止日
+FROM 
+DIM_DAY
+WHERE 
+YEAR_ID = SUBSTR('${YEAR}',1,4)
+AND 
+DDATE <= DATE'${YEAR}'
+order by DDATE 
+	
+
+SELECT  
+--A.AREA_CODE AS 区域,
+--A.CUS_CODE AS 门店,
+B.WEEK_ID AS 周序号,
+SUM(SALE_QTY) AS 数量,
+SUM(NO_TAX_AMOUNT) AS 无税销售额,
+COUNT(DISTINCT GOODS_CODE) AS 促销商品种数,
+count(distinct tran_no)  AS 交易笔次
+FROM  
+ODS_SALE_PROMO A, DIM_DAY B 
+WHERE 
+A.CUS_CODE = '${CUS}'
+and to_char(a.sale_date,'yyyy')=SUBSTR('${YEAR}',1,4)
+AND
+B.YEAR_ID = SUBSTR('${YEAR}',1,4)
+AND
+A.SALE_DATE <= DATE'${YEAR}'
+AND
+A.SALE_DATE =  B.DDATE
+GROUP BY 
+--A.AREA_CODE,
+--A.CUS_CODE,
+B.WEEK_ID
+ORDER BY 
+B.WEEK_ID
+
+SELECT  
+--A.AREA_CODE AS 区域,
+--A.CUS_CODE AS 门店,
+B.WEEK_ID AS 周序号,
+COUNT(DISTINCT GOODS_CODE) AS 促销商品种数
+
+FROM  
+FACT_SALE A, DIM_DAY B 
+WHERE 
+A.CUS_CODE = '${CUS}'
+and to_char(a.sale_date,'yyyy')=SUBSTR('${YEAR}',1,4)
+AND B.YEAR_ID = SUBSTR('${YEAR}',1,4)
+AND
+A.SALE_DATE <= DATE'${YEAR}'
+AND
+A.SALE_DATE =  B.DDATE
+GROUP BY 
+--A.AREA_CODE,
+--A.CUS_CODE,
+B.WEEK_ID
+ORDER BY 
+B.WEEK_ID
+
+SELECT  
+--A.AREA_CODE AS 区域,
+--A.CUS_CODE AS 门店,
+B.MONTH_ID AS 月序号,
+COUNT(DISTINCT GOODS_CODE) AS 促销商品种数
+
+FROM  
+FACT_SALE A, DIM_DAY B 
+WHERE 
+A.CUS_CODE = '${CUS}'
+AND 
+a.SALE_DATE>=trunc(DATE'${YEAR}','mm')
+AND 
+a.SALE_DATE<add_months(trunc(DATE'${YEAR}','mm'),1)
+AND
+A.SALE_DATE <= DATE'${YEAR}'
+AND
+A.SALE_DATE =  B.DDATE
+GROUP BY 
+--A.AREA_CODE,
+--A.CUS_CODE,
+B.MONTH_ID
+ORDER BY 
+B.MONTH_ID
+
+SELECT  
+--A.AREA_CODE AS 区域,
+--A.CUS_CODE AS 门店,
+B.YEAR_ID AS 年序号,
+COUNT(DISTINCT GOODS_CODE) AS 促销商品种数
+
+FROM  
+FACT_SALE A, DIM_DAY B 
+WHERE 
+A.CUS_CODE = '${CUS}'
+AND
+TO_CHAR(A.SALE_DATE,'YYYY') = SUBSTR('${YEAR}',1,4)
+AND
+A.SALE_DATE <= DATE'${YEAR}'
+AND
+A.SALE_DATE =  B.DDATE
+GROUP BY 
+--A.AREA_CODE,
+--A.CUS_CODE,
+B.YEAR_ID
+
+
+SELECT  
+--A.AREA_CODE AS 区域,
+--A.CUS_CODE AS 门店,
+B.WEEK_ID AS 周序号,
+COUNT(DISTINCT GOODS_CODE) AS 促销商品种数
+
+FROM  
+ODS_SALE_PROMO A, DIM_DAY B 
+WHERE 
+A.CUS_CODE = '${CUS}'
+and to_char(a.sale_date,'yyyy')=SUBSTR('${YEAR}',1,4)
+AND
+B.YEAR_ID = SUBSTR('${YEAR}',1,4)
+AND
+A.SALE_DATE =  B.DDATE
+GROUP BY 
+--A.AREA_CODE,
+--A.CUS_CODE,
+B.WEEK_ID
+ORDER BY 
+B.WEEK_ID
+
+SELECT  
+--A.AREA_CODE AS 区域,
+--A.CUS_CODE AS 门店,
+B.MONTH_ID AS 月序号,
+COUNT(DISTINCT GOODS_CODE) AS 促销商品种数
+
+FROM  
+ODS_SALE_PROMO A, DIM_DAY B 
+WHERE 
+A.CUS_CODE = '${CUS}'
+AND 
+a.SALE_DATE>=trunc(DATE'${YEAR}','mm')
+AND 
+a.SALE_DATE<add_months(trunc(DATE'${YEAR}','mm'),1)
+AND
+A.SALE_DATE <= DATE'${YEAR}'
+AND
+A.SALE_DATE =  B.DDATE
+GROUP BY 
+--A.AREA_CODE,
+--A.CUS_CODE,
+B.MONTH_ID
+ORDER BY 
+B.MONTH_ID
+
+SELECT  
+COUNT(DISTINCT GOODS_CODE) AS 促销商品种数
+
+FROM  
+ODS_SALE_PROMO A, DIM_DAY B 
+WHERE 
+A.CUS_CODE = '${CUS}'
+AND
+TO_CHAR(A.SALE_DATE,'YYYY') = SUBSTR('${YEAR}',1,4)
+AND
+A.SALE_DATE <= DATE'${YEAR}'
+AND
+A.SALE_DATE =  B.DDATE
+
+SELECT 
+B.WEEK_ID AS 周序号,
+count(distinct tran_no)  AS 交易笔次
+FROM  ODS_SALE_PROMO A,
+DIM_DAY B
+WHERE 
+A.CUS_CODE = '${CUS}'
+and to_char(a.sale_date,'yyyy')=SUBSTR('${YEAR}',1,4)
+AND
+B.YEAR_ID = SUBSTR('${YEAR}',1,4)
+AND
+A.SALE_DATE <= DATE'${YEAR}'
+AND
+A.SALE_DATE =  B.DDATE
+GROUP BY 
+B.WEEK_ID 
+
+SELECT  
+--A.AREA_CODE AS 区域,
+--A.CUS_CODE AS 门店,
+B.MONTH_ID AS 月序号,
+SUM(SALE_QTY) AS 数量,
+SUM(NO_TAX_AMOUNT) AS 无税销售额,
+COUNT(DISTINCT GOODS_CODE) AS 促销商品种数,
+count(distinct tran_no) AS 交易笔次
+FROM  
+ODS_SALE_PROMO A, DIM_DAY B 
+WHERE 
+A.CUS_CODE = '${CUS}'
+AND 
+a.SALE_DATE>=trunc(DATE'${YEAR}','mm')
+AND 
+a.SALE_DATE<add_months(trunc(DATE'${YEAR}','mm'),1)
+AND
+A.SALE_DATE =  B.DDATE
+GROUP BY 
+--A.AREA_CODE,
+--A.CUS_CODE,
+B.MONTH_ID
+ORDER BY 
+B.MONTH_ID
+
+SELECT  
+
+SUM(SALE_QTY) AS 数量,
+SUM(NO_TAX_AMOUNT) AS 无税销售额,
+COUNT(DISTINCT GOODS_CODE) AS 促销商品种数,
+count(distinct tran_no) AS 交易笔次
+FROM  
+ODS_SALE_PROMO A, DIM_DAY B 
+WHERE 
+A.CUS_CODE = '${CUS}'
+AND
+TO_CHAR(A.SALE_DATE,'YYYY') = SUBSTR('${YEAR}',1,4)
+AND
+A.SALE_DATE <= DATE'${YEAR}'
+AND
+A.SALE_DATE =  B.DDATE
+
+SELECT  
+SUM(SALE_QTY) AS 数量,
+SUM(NO_TAX_AMOUNT) AS 无税销售额
+FROM  
+DM_SALE_TMP A, DIM_DAY B 
+WHERE 
+A.CUS_CODE = '${CUS}'
+AND
+TO_CHAR(A.SALE_DATE,'YYYY') = SUBSTR('${YEAR}',1,4)
+AND
+A.SALE_DATE <= DATE'${YEAR}'
+AND
+A.SALE_DATE =  B.DDATE
+
+SELECT 
+
+SUM(TRAN_NUM) AS 交易笔次
+FROM  DM_TRANSACTION  A,
+DIM_DAY B
+WHERE 
+A.CUS_CODE = '${CUS}'
+AND
+TO_CHAR(A.SALE_DATE,'YYYY') = SUBSTR('${YEAR}',1,4)
+AND
+A.SALE_DATE <= DATE'${YEAR}'
+AND
+A.SALE_DATE =  B.DDATE
+
+
+
+SELECT 
+B.MONTH_ID AS 月序号,
+count(distinct tran_no) AS 交易笔次
+FROM  ODS_SALE_PROMO  A,
+DIM_DAY B
+WHERE 
+A.CUS_CODE = '${CUS}'
+AND 
+a.SALE_DATE>=trunc(DATE'${YEAR}','mm')
+AND 
+a.SALE_DATE<add_months(trunc(DATE'${YEAR}','mm'),1)
+AND
+A.SALE_DATE =  B.DDATE
+GROUP BY 
+B.MONTH_ID 
+
+
+SELECT 
+
+count(distinct tran_no) AS 交易笔次
+FROM  ODS_SALE_PROMO  A,
+DIM_DAY B
+WHERE 
+A.CUS_CODE = '${CUS}'
+AND
+TO_CHAR(A.SALE_DATE,'YYYY') = SUBSTR('${YEAR}',1,4)
+AND
+A.SALE_DATE <= DATE'${YEAR}'
+AND
+A.SALE_DATE =  B.DDATE
+

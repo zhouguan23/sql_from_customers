@@ -1,0 +1,320 @@
+SELECT  
+A.AREA_CODE,
+A.CUS_CODE,
+SUM(STOCK_QTY),
+SUM(NO_TAX_COST)
+FROM 
+DIM_CUS B,
+DM_STOCK_SHOP_SHOP A
+WHERE 
+A.AREA_CODE = B.AREA_CODE 
+AND 
+A.CUS_CODE = B.CUS_CODE
+AND
+1=1
+${if(len(AREA)=0,""," and A.AREA_CODE in ('"+AREA+"')")}
+${if(len(CUS)=0,""," and A.CUS_CODE in ('"+CUS+"')")}
+${if(len(GATHER)=0,""," and A.GATHER in ('"+GATHER+"')")}
+${if(len(ATTRIBUTE)=0,""," and B.ATTRIBUTE in ('"+ATTRIBUTE+"')")}
+${if(len(DTP)=0,""," and A.DTP in ('"+DTP+"')")}
+AND
+DDATE >= DATE'${DATE1}'
+AND 
+DDATE <= DATE'${DATE2}'
+GROUP  BY 
+A.AREA_CODE,
+A.CUS_CODE
+
+SELECT  
+A.AREA_CODE,
+A.CUS_CODE,
+SUM(STOCK_QTY),
+SUM(NO_TAX_COST)
+FROM 
+DIM_CUS B,
+DM_STOCK_SHOP_SHOP A
+WHERE 
+A.AREA_CODE = B.AREA_CODE 
+AND 
+A.CUS_CODE = B.CUS_CODE
+AND
+1=1
+${if(len(AREA)=0,""," and A.AREA_CODE in ('"+AREA+"')")}
+${if(len(CUS)=0,""," and A.CUS_CODE in ('"+CUS+"')")}
+${if(len(GATHER)=0,""," and A.GATHER in ('"+GATHER+"')")}
+${if(len(ATTRIBUTE)=0,""," and B.ATTRIBUTE in ('"+ATTRIBUTE+"')")}
+${if(len(DTP)=0,""," and A.DTP in ('"+DTP+"')")}
+AND
+DDATE >= ADD_MONTHS(DATE'${DATE1}',-12)
+AND 
+DDATE <= ADD_MONTHS(DATE'${DATE2}',-12)
+GROUP  BY 
+A.AREA_CODE,
+A.CUS_CODE
+
+SELECT  
+A.AREA_CODE,
+A.CUS_CODE,
+SUM(STOCK_QTY),
+SUM(NO_TAX_COST)
+FROM
+DIM_CUS B, 
+DM_STOCK_SHOP_SHOP A
+WHERE 
+A.AREA_CODE = B.AREA_CODE 
+AND 
+A.CUS_CODE = B.CUS_CODE
+AND
+1=1
+${if(len(AREA)=0,""," and A.AREA_CODE in ('"+AREA+"')")}
+${if(len(CUS)=0,""," and A.CUS_CODE in ('"+CUS+"')")}
+${if(len(GATHER)=0,""," and A.GATHER in ('"+GATHER+"')")}
+${if(len(ATTRIBUTE)=0,""," and B.ATTRIBUTE in ('"+ATTRIBUTE+"')")}
+${if(len(DTP)=0,""," and A.DTP in ('"+DTP+"')")}
+AND
+DDATE >= ADD_MONTHS(DATE'${DATE1}',-1)
+AND 
+DDATE <= ADD_MONTHS(DATE'${DATE2}',-1)
+GROUP  BY 
+A.AREA_CODE,
+A.CUS_CODE
+
+SELECT 
+A.AREA_CODE,
+C.AREA_NAME,
+A.CUS_CODE,
+B.CUS_NAME,
+B.ATTRIBUTE,
+CASE WHEN 
+B.OPEN_DATE IS NULL 
+THEN ''
+ELSE
+TO_CHAR(B.OPEN_DATE,'YYYY')||'年' 
+END
+AS  开业年,
+SUM(NO_TAX_AMOUNT),
+SUM(NO_TAX_COST),
+SUM(DELIVERY_QTY)
+FROM
+DIM_REGION C,
+DIM_CUS B,
+DM_DELIVERY_TMP A
+WHERE
+A.AREA_CODE = C.AREA_CODE
+AND
+A.AREA_CODE = B.AREA_CODE
+AND 
+A.CUS_CODE  = B.CUS_CODE
+AND 
+1=1
+${if(len(AREA)=0,""," and A.AREA_CODE in ('"+AREA+"')")}
+${if(len(CUS)=0,""," and A.CUS_CODE in ('"+CUS+"')")}
+${if(len(GATHER)=0,""," and A.GATHER in ('"+GATHER+"')")}
+${if(len(ATTRIBUTE)=0,""," and B.ATTRIBUTE in ('"+ATTRIBUTE+"')")}
+${if(len(DTP)=0,""," and A.DTP in ('"+DTP+"')")}
+AND
+SALE_DATE >= DATE'${DATE1}'
+AND 
+SALE_DATE <= DATE'${DATE2}'
+GROUP BY
+A.AREA_CODE,
+C.AREA_NAME,
+A.CUS_CODE,
+B.CUS_NAME,
+B.ATTRIBUTE,
+CASE WHEN 
+B.OPEN_DATE IS NULL 
+THEN ''
+ELSE
+TO_CHAR(B.OPEN_DATE,'YYYY')||'年' 
+END
+
+SELECT 
+A.AREA_CODE,
+A.CUS_CODE,
+SUM(NO_TAX_AMOUNT),
+SUM(NO_TAX_COST),
+SUM(DELIVERY_QTY)
+FROM
+DIM_CUS B,
+DM_DELIVERY_TMP A
+WHERE
+A.AREA_CODE = B.AREA_CODE
+AND 
+A.CUS_CODE  = B.CUS_CODE
+AND 
+1=1
+${if(len(AREA)=0,""," and A.AREA_CODE in ('"+AREA+"')")}
+${if(len(CUS)=0,""," and A.CUS_CODE in ('"+CUS+"')")}
+${if(len(GATHER)=0,""," and A.GATHER in ('"+GATHER+"')")}
+${if(len(ATTRIBUTE)=0,""," and B.ATTRIBUTE in ('"+ATTRIBUTE+"')")}
+${if(len(DTP)=0,""," and A.DTP in ('"+DTP+"')")}
+AND
+SALE_DATE >= ADD_MONTHS(DATE'${DATE1}',-12)
+AND 
+SALE_DATE <= ADD_MONTHS(DATE'${DATE2}',-12)
+GROUP BY
+A.AREA_CODE,
+A.CUS_CODE
+
+SELECT 
+A.AREA_CODE,
+A.CUS_CODE,
+SUM(NO_TAX_AMOUNT),
+SUM(NO_TAX_COST),
+SUM(DELIVERY_QTY)
+FROM
+DIM_CUS B,
+DM_DELIVERY_TMP A
+WHERE
+A.AREA_CODE = B.AREA_CODE
+AND 
+A.CUS_CODE  = B.CUS_CODE
+AND 
+1=1
+${if(len(AREA)=0,""," and A.AREA_CODE in ('"+AREA+"')")}
+${if(len(CUS)=0,""," and A.CUS_CODE in ('"+CUS+"')")}
+${if(len(GATHER)=0,""," and A.GATHER in ('"+GATHER+"')")}
+${if(len(ATTRIBUTE)=0,""," and B.ATTRIBUTE in ('"+ATTRIBUTE+"')")}
+${if(len(DTP)=0,""," and A.DTP in ('"+DTP+"')")}
+AND
+SALE_DATE >= ADD_MONTHS(DATE'${DATE1}',-1)
+AND 
+SALE_DATE <= ADD_MONTHS(DATE'${DATE2}',-1)
+GROUP BY
+A.AREA_CODE,
+A.CUS_CODE
+
+SELECT DISTINCT 
+AREA_CODE,
+AREA_NAME 
+FROM
+DIM_REGION
+
+SELECT DISTINCT 
+A.CUS_CODE,
+B.CUS_NAME
+FROM 
+DIM_CUS B,
+DM_DELIVERY_TMP A
+WHERE 
+A.AREA_CODE = B.AREA_CODE 
+AND 
+A.CUS_CODE = B.CUS_CODE
+AND 
+1=1
+${if(len(AREA)=0,""," and A.AREA_CODE in ('"+AREA+"')")}
+${if(len(ATTRIBUTE)=0,""," and B.ATTRIBUTE in ('"+ATTRIBUTE+"')")}
+AND 
+A.SALE_DATE >= DATE'${DATE1}'
+AND 
+A.SALE_DATE <= DATE'${DATE2}'
+
+SELECT '直营' AS a FROM　DUAL
+UNION ALL 
+SELECT '加盟' AS a FROM　DUAL
+
+
+SELECT  DISTINCT NEW_ATTRIBUTE
+FROM 
+DIM_NET_CATALOGUE_GENERAL_ALL
+
+UNION ALL
+
+SELECT '地采' FROM DUAL
+
+SELECT DISTINCT 
+dr.AREA_CODE,
+dr.AREA_NAME 
+FROM
+DIM_REGION dr,USER_AUTHORITY  ua
+WHERE 
+1=1
+and (dr.UNION_AREA_NAME=ua.UNION_AREA_NAME or ua.UNION_AREA_NAME='ALL') 
+and ${"ua.user_id='"+$fr_username+"'"}
+
+${if(len(AREA)=0,""," and dr.AREA_CODE in ('"+AREA+"')")}
+
+SELECT 
+DISTINCT
+A.AREA_CODE,
+C.AREA_NAME,
+A.CUS_CODE,
+B.CUS_NAME,
+B.ATTRIBUTE,
+CASE WHEN 
+B.OPEN_DATE IS NULL 
+THEN ''
+ELSE
+TO_CHAR(B.OPEN_DATE,'YYYY')||'年' 
+END
+AS  开业年
+FROM
+DIM_REGION C,USER_AUTHORITY  ua,
+DIM_CUS B,
+DM_DELIVERY_TMP A
+WHERE
+
+
+A.AREA_CODE = C.AREA_CODE
+and (C.UNION_AREA_NAME=ua.UNION_AREA_NAME or ua.UNION_AREA_NAME='ALL') 
+and ${"ua.user_id='"+$fr_username+"'"}
+AND
+A.AREA_CODE = B.AREA_CODE
+AND 
+A.CUS_CODE  = B.CUS_CODE
+AND 
+1=1
+${if(len(AREA)=0,""," and A.AREA_CODE in ('"+AREA+"')")}
+${if(len(CUS)=0,""," and A.CUS_CODE in ('"+CUS+"')")}
+${if(len(GATHER)=0,""," and A.GATHER in ('"+GATHER+"')")}
+${if(len(ATTRIBUTE)=0,""," and B.ATTRIBUTE in ('"+ATTRIBUTE+"')")}
+${if(len(DTP)=0,""," and A.DTP in ('"+DTP+"')")}
+AND
+SALE_DATE >= DATE'${DATE1}'
+AND 
+SALE_DATE <= DATE'${DATE2}'
+
+
+UNION
+
+
+SELECT 
+DISTINCT
+A.AREA_CODE,
+C.AREA_NAME,
+A.CUS_CODE,
+B.CUS_NAME,
+B.ATTRIBUTE,
+CASE WHEN 
+B.OPEN_DATE IS NULL 
+THEN ''
+ELSE
+TO_CHAR(B.OPEN_DATE,'YYYY')||'年' 
+END
+AS  开业年
+FROM
+DIM_REGION C
+,USER_AUTHORITY  ua,
+DIM_CUS B,
+DM_STOCK_SHOP_SHOP A
+WHERE
+A.AREA_CODE = C.AREA_CODE
+and (C.UNION_AREA_NAME=ua.UNION_AREA_NAME or ua.UNION_AREA_NAME='ALL') 
+and ${"ua.user_id='"+$fr_username+"'"}
+AND
+A.AREA_CODE = B.AREA_CODE
+AND 
+A.CUS_CODE  = B.CUS_CODE
+AND 
+1=1
+${if(len(AREA)=0,""," and A.AREA_CODE in ('"+AREA+"')")}
+${if(len(CUS)=0,""," and A.CUS_CODE in ('"+CUS+"')")}
+${if(len(GATHER)=0,""," and A.GATHER in ('"+GATHER+"')")}
+${if(len(ATTRIBUTE)=0,""," and B.ATTRIBUTE in ('"+ATTRIBUTE+"')")}
+${if(len(DTP)=0,""," and A.DTP in ('"+DTP+"')")}
+AND
+DDATE >= DATE'${DATE1}'
+AND 
+DDATE <= DATE'${DATE2}'
+

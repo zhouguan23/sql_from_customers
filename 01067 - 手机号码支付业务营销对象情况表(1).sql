@@ -1,0 +1,37 @@
+SELECT * FROM DCS_DATA.MOBILE_PAY_MARKET_OBJECT_01067
+WHERE ('9988'='${jgm}'
+OR TFENHANGHAO='${jgm}'
+OR FENHANGHAO='${jgm}'
+OR ORG_ID='${jgm}')
+AND DATA_DT='${DT}'
+${if(len(aa)=0,""," and org_name in("+"'"+treelayer(aa,true,"\',\'")+"'"+")")}
+
+select auth_jgm from unitrep.dsp_sys_user
+where login_id='${fine_username}'
+
+SELECT DISTINCT DATA_DT FROM DCS_DATA.MOBILE_PAY_MARKET_OBJECT_01067
+
+SELECT DISTINCT TFENHANG FROM DCS_DATA.MOBILE_PAY_MARKET_OBJECT_01067
+WHERE TFENHANG<>''
+ AND ('9988'='${jgm}'
+OR TFENHANGHAO='${jgm}'
+OR FENHANGHAO='${jgm}'
+OR ORG_ID='${jgm}')
+
+SELECT DISTINCT FENHANG FROM DCS_DATA.MOBILE_PAY_MARKET_OBJECT_01067
+WHERE FENHANG<>''
+AND TFENHANG='${layer1}'
+AND ('9988'='${jgm}'
+OR TFENHANGHAO='${jgm}'
+OR FENHANGHAO='${jgm}'
+OR ORG_ID='${jgm}')
+
+SELECT DISTINCT ORG_NAME FROM DCS_DATA.MOBILE_PAY_MARKET_OBJECT_01067
+WHERE ORG_NAME<>''
+AND TFENHANG='${layer1}'
+AND FENHANG='${layer2}'
+AND ('9988'='${jgm}'
+OR TFENHANGHAO='${jgm}'
+OR FENHANGHAO='${jgm}'
+OR ORG_ID='${jgm}')
+
